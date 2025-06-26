@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome | YourApp</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<style>
+  /* Dashboard Specific Styles */
+:root {
+  --primary-color: #4361ee;
+  --primary-light: #e6e9ff;
+  --secondary-color: #f72585;
+  --dark-color: #2b2d42;
+  --light-color: #f8f9fa;
+  --medium-gray: #e9ecef;
+  --text-gray: #6c757d;
+  --white: #ffffff;
+  --success-color: #4bb543;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.dashboard-header {
+  background-color: var(--white);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 0;
+  overflow: hidden;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.app-logo span {
+  color: var(--primary-color);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info span:first-child {
+  font-weight: 500;
+}
+
+.user-info span:last-child {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--text-gray);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+
+.logout-btn:hover {
+  background-color: var(--medium-gray);
+  color: var(--primary-color);
+}
+
+/* Main Content Styles */
+.dashboard-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.welcome-section {
+  margin-bottom: 2rem;
+}
+
+.welcome-card {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.welcome-card h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+}
+
+.welcome-card h2 span {
+  color: var(--primary-color);
+}
+
+.welcome-card p {
+  color: var(--text-gray);
+  margin-bottom: 1.5rem;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background-color: var(--primary-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+}
+
+/* Quick Actions */
+.quick-actions {
+  margin-bottom: 2rem;
+}
+
+.quick-actions h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.action-btn {
+  background-color: var(--white);
+  border: 1px solid var(--medium-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.action-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.action-btn i {
+  font-size: 1.5rem;
+}
+
+/* Recent Activity */
+.recent-activity h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.activity-list {
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-item {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item i {
+  color: var(--success-color);
+  font-size: 1.2rem;
+}
+
+.activity-item p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-header {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+  
+  .dashboard-card {
+    padding: 1rem;
+  }
+  
+  .activity-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+</style>
+<body>
+  <div class="dashboard-container">
+    <!-- Header Section -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h1 class="app-logo">Your<span>App</span></h1>
+        <div class="user-profile">
+          <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
+          <div class="user-info">
+            <span id="user-name"></span>
+            <span id="user-email">user@example.com</span>
+          </div>
+          <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <section class="welcome-section">
+        <div class="welcome-card">
+          <h2>Welcome back, <span id="welcome-name">User</span>!</h2>
+          <p>We're glad to see you again. Here's what's happening today.</p>
+          <div class="stats-container">
+            <div class="stat-card">
+              <i class="fas fa-calendar-check"></i>
+              <div>
+                <span class="stat-number">5</span>
+                <span class="stat-label">Upcoming</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-bell"></i>
+              <div>
+                <span class="stat-number">2</span>
+                <span class="stat-label">Notifications</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-tasks"></i>
+              <div>
+                <span class="stat-number">7</span>
+                <span class="stat-label">Tasks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+          <button class="action-btn">
+            <i class="fas fa-plus"></i>
+            <span>Create New</span>
+          </button>
+          <button class="action-btn">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </button>
+          <button class="action-btn">
+            <i class="fas fa-question-circle"></i>
+            <span>Help</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="recent-activity">
+        <h3>Recent Activity</h3>
+        <div class="activity-list">
+          <div class="activity-item">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <p>You logged in successfully</p>
+              <span class="activity-time">Just now</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <i class="fas fa-file-alt"></i>
+            <div>
+              <p>Updated profile information</p>
+              <span class="activity-time">2 hours ago</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
